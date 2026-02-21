@@ -25,11 +25,12 @@ class PanelUpdated implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'id'     => $this->panel->id,
-            'hash'   => $this->panel->hash,
-            'title'  => $this->panel->title,
-            'status' => $this->panel->status,
-            'links'  => $this->panel->links()
+            'id'            => $this->panel->id,
+            'hash'          => $this->panel->hash,
+            'title'         => $this->panel->title,
+            'status'        => $this->panel->status,
+            'show_controls' => $this->panel->show_controls,
+            'links'         => $this->panel->links()
                 ->where('status', true)
                 ->get(['id', 'title', 'url', 'duration_time', 'display_number'])
                 ->toArray(),

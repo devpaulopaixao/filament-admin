@@ -28,6 +28,9 @@ class PanelForm
                     Toggle::make('status')
                         ->label('Ativo')
                         ->default(true),
+                    Toggle::make('show_controls')
+                        ->label('Exibir controles de navegação')
+                        ->default(false),
                     Select::make('panel_group_id')
                         ->label('Grupo')
                         ->relationship('panelGroup', 'title')

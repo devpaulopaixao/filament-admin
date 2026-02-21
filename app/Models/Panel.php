@@ -19,6 +19,7 @@ class Panel extends Model
         'panel_group_id',
         'title',
         'status',
+        'show_controls',
         'hash',
     ];
 
@@ -26,6 +27,7 @@ class Panel extends Model
     {
         return [
             'status' => 'boolean',
+            'show_controls' => 'boolean',
         ];
     }
 
