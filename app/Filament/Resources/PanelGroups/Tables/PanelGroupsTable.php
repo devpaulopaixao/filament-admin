@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PanelGroups\Tables;
 
 use App\Models\User;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -47,12 +48,14 @@ class PanelGroupsTable
                     ->searchable(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make()
-                    ->visible(function ($record) {
-                        $user = auth()->user();
-                        return $user->hasRole('super_admin') || $record->user_id === $user->id;
-                    }),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make()
+                        ->visible(function ($record) {
+                            $user = auth()->user();
+                            return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                ]),
             ])
             ->toolbarActions([
                 DeleteBulkAction::make(),
