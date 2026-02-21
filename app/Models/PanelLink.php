@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\PanelUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,14 @@ class PanelLink extends Model
             if (empty($link->display_number)) {
                 $link->display_number = static::where('panel_id', $link->panel_id)->max('display_number') + 1;
             }
+        });
+
+        static::saved(function (PanelLink $link) {
+            broadcast(new PanelUpdated($link->panel));
+        });
+
+        static::deleted(function (PanelLink $link) {
+            broadcast(new PanelUpdated($link->panel));
         });
     }
 

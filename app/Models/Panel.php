@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\PanelUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,6 +39,10 @@ class Panel extends Model
 
                 $panel->hash = $hash;
             }
+        });
+
+        static::saved(function (Panel $panel) {
+            broadcast(new PanelUpdated($panel));
         });
     }
 
