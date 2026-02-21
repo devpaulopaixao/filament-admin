@@ -26,8 +26,20 @@ function buildEcho() {
 
 function Inactive() {
     return (
-        <div style={styles.centered}>
-            <span style={styles.message}>Tela inativa</span>
+        <div style={styles.statusPage}>
+            <div style={styles.statusCard}>
+                <div style={styles.iconWrap}>
+                    {/* Monitor com X */}
+                    <svg viewBox="0 0 24 24" fill="none" style={styles.statusIcon}>
+                        <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M9 8l6 6M15 8l-6 6" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <div style={styles.statusDot} />
+                </div>
+                <p style={styles.statusLabel}>Tela inativa</p>
+                <p style={styles.statusSub}>Esta tela está desativada e não exibirá conteúdo.</p>
+            </div>
         </div>
     );
 }
@@ -54,6 +66,13 @@ function Loading() {
 
 function ScreenDisplay({ id }) {
     var [screen, setScreen] = useState(null);
+
+    // Update browser tab title
+    useEffect(function () {
+        if (screen && screen.title) {
+            document.title = screen.title;
+        }
+    }, [screen]);
 
     // Fetch initial data
     useEffect(function () {
@@ -105,18 +124,76 @@ var styles = {
         justifyContent: 'center',
         width: '100%',
         height: '100vh',
-        background: '#111',
+        background: '#0a0a0a',
     },
     message: {
-        color: '#fff',
-        fontSize: '1.5rem',
-        fontFamily: 'sans-serif',
+        color: 'rgba(255,255,255,0.5)',
+        fontSize: '1.25rem',
+        fontFamily: 'system-ui, sans-serif',
+        letterSpacing: '0.02em',
     },
     iframe: {
         width: '100%',
         height: '100vh',
         border: 'none',
         display: 'block',
+    },
+
+    // Inactive layout
+    statusPage: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100vh',
+        background: 'radial-gradient(ellipse at center, #111827 0%, #030712 100%)',
+        fontFamily: 'system-ui, sans-serif',
+    },
+    statusCard: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '16px',
+        padding: '48px 56px',
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '16px',
+        backdropFilter: 'blur(8px)',
+        maxWidth: '360px',
+        textAlign: 'center',
+    },
+    iconWrap: {
+        position: 'relative',
+        marginBottom: '8px',
+    },
+    statusIcon: {
+        width: '72px',
+        height: '72px',
+        color: 'rgba(255,255,255,0.25)',
+    },
+    statusDot: {
+        position: 'absolute',
+        bottom: '-2px',
+        right: '-2px',
+        width: '14px',
+        height: '14px',
+        borderRadius: '50%',
+        background: '#ef4444',
+        border: '2px solid #030712',
+        boxShadow: '0 0 8px rgba(239,68,68,0.6)',
+    },
+    statusLabel: {
+        color: '#f1f5f9',
+        fontSize: '1.25rem',
+        fontWeight: '600',
+        letterSpacing: '0.01em',
+        margin: 0,
+    },
+    statusSub: {
+        color: 'rgba(255,255,255,0.35)',
+        fontSize: '0.875rem',
+        lineHeight: '1.5',
+        margin: 0,
     },
 };
 
