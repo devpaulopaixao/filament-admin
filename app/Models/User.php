@@ -53,4 +53,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Panel::class, 'panel_user');
     }
+
+    public function screens(): HasMany
+    {
+        return $this->hasMany(Screen::class);
+    }
+
+    public function allowedScreens(): BelongsToMany
+    {
+        return $this->belongsToMany(Screen::class, 'screen_user');
+    }
 }
