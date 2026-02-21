@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/panel-display.jsx',
+                'resources/js/screen-display.jsx',
             ],
             refresh: true,
         }),

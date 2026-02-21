@@ -3,9 +3,12 @@
 namespace App\Filament\Resources\Screens\Tables;
 
 use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -52,12 +55,21 @@ class ScreensTable
                     ->searchable(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make()
-                    ->visible(function ($record) {
-                        $user = auth()->user();
-                        return $user->hasRole('super_admin') || $record->user_id === $user->id;
-                    }),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make()
+                        ->visible(function ($record) {
+                            $user = auth()->user();
+                            return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                    Action::make('open_display')
+                        ->label('Abrir exibição')
+                        ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                        ->url(function ($record) {
+                            return url('/tela/' . $record->id);
+                        })
+                        ->openUrlInNewTab(),
+                ]),
             ])
             ->toolbarActions([
                 DeleteBulkAction::make(),
