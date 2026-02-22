@@ -6,6 +6,7 @@ use App\Filament\Resources\PanelGroups\Pages\CreatePanelGroup;
 use App\Filament\Resources\PanelGroups\Pages\EditPanelGroup;
 use App\Filament\Resources\PanelGroups\Pages\ListPanelGroups;
 use App\Filament\Resources\PanelGroups\Pages\ViewPanelGroup;
+use App\Filament\Resources\PanelGroups\RelationManagers\AllowedUsersRelationManager;
 use App\Filament\Resources\PanelGroups\RelationManagers\PanelsRelationManager;
 use App\Filament\Resources\PanelGroups\Schemas\PanelGroupForm;
 use App\Filament\Resources\PanelGroups\Schemas\PanelGroupInfolist;
@@ -66,6 +67,7 @@ class PanelGroupResource extends Resource
     {
         return [
             PanelsRelationManager::class,
+            AllowedUsersRelationManager::class,
         ];
     }
 

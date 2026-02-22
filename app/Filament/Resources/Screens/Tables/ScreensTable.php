@@ -8,6 +8,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -22,33 +23,33 @@ class ScreensTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Título')
-                    ->searchable(),
-                TextColumn::make('panel.title')
-                    ->label('Painel')
-                    ->formatStateUsing(function ($state, $record) {
+                    ->label('Tela')
+                    ->weight(FontWeight::Medium)
+                    ->description(function ($record) {
                         if ($record->panel && $record->panel->panelGroup) {
-                            return '[' . $record->panel->panelGroup->title . '] ' . $state;
+                            return '[' . $record->panel->panelGroup->title . '] ' . $record->panel->title;
                         }
-                        return $state;
+                        return $record->panel?->title ?? 'Sem painel';
                     })
                     ->searchable(),
+                IconColumn::make('status')
+                    ->label('Ativa')
+                    ->boolean(),
                 TextColumn::make('user.name')
                     ->label('Criado por')
-                    ->searchable(),
-                IconColumn::make('status')
-                    ->label('Ativo')
-                    ->boolean(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TernaryFilter::make('status')
                     ->label('Estado')
-                    ->trueLabel('Ativos')
-                    ->falseLabel('Inativos'),
+                    ->trueLabel('Ativas')
+                    ->falseLabel('Inativas'),
                 SelectFilter::make('user_id')
                     ->label('Criador')
                     ->options(User::orderBy('name')->pluck('name', 'id'))
@@ -65,9 +66,7 @@ class ScreensTable
                     Action::make('open_display')
                         ->label('Abrir exibição')
                         ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
-                        ->url(function ($record) {
-                            return url('/tela/' . $record->id);
-                        })
+                        ->url(fn ($record) => url('/tela/' . $record->id))
                         ->openUrlInNewTab(),
                 ]),
             ])

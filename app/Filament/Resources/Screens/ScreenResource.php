@@ -6,6 +6,7 @@ use App\Filament\Resources\Screens\Pages\CreateScreen;
 use App\Filament\Resources\Screens\Pages\EditScreen;
 use App\Filament\Resources\Screens\Pages\ListScreens;
 use App\Filament\Resources\Screens\Pages\ViewScreen;
+use App\Filament\Resources\Screens\RelationManagers\AllowedUsersRelationManager;
 use App\Filament\Resources\Screens\Schemas\ScreenForm;
 use App\Filament\Resources\Screens\Schemas\ScreenInfolist;
 use App\Filament\Resources\Screens\Tables\ScreensTable;
@@ -63,7 +64,9 @@ class ScreenResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            AllowedUsersRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

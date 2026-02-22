@@ -3,27 +3,39 @@
 namespace App\Filament\Resources\Screens\Schemas;
 
 use App\Models\Panel;
-use App\Models\PanelGroup;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class ScreenForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Dados da tela')
+            Section::make('Identificação')
+                ->description('Informações básicas da tela.')
+                ->icon(Heroicon::OutlinedTv)
                 ->schema([
                     TextInput::make('title')
                         ->label('Título')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     Toggle::make('status')
-                        ->label('Ativo')
+                        ->label('Tela ativa')
+                        ->helperText('Quando desativada, a exibição pública mostrará uma tela inativa.')
                         ->default(true),
+                ])
+                ->columns(2),
+
+            Section::make('Configuração')
+                ->description('Defina o painel que será exibido nesta tela.')
+                ->icon(Heroicon::OutlinedAdjustmentsHorizontal)
+                ->schema([
                     Select::make('panel_id')
                         ->label('Painel')
                         ->options(function () {
@@ -60,28 +72,29 @@ class ScreenForm
                         ->required()
                         ->searchable()
                         ->columnSpanFull(),
-                ])
-                ->columns(2),
+                ]),
 
             Section::make('Acesso')
+                ->description('Defina quais utilizadores podem visualizar esta tela.')
+                ->icon(Heroicon::OutlinedShieldCheck)
                 ->schema([
-                    Select::make('allowedUsers')
+                    // Apenas no create — no edit é gerida pelo RelationManager
+                    CheckboxList::make('allowedUsers')
                         ->label('Utilizadores com acesso de visualização')
-                        ->multiple()
+                        ->helperText('Marque os utilizadores que podem visualizar esta tela. Deixe vazio para que apenas o criador tenha acesso.')
                         ->relationship('allowedUsers', 'name')
                         ->searchable()
-                        ->preload()
+                        ->bulkToggleable()
+                        ->columns(2)
                         ->columnSpanFull()
-                        ->visible(function ($record) {
-                            $user = auth()->user();
-
-                            if ($user->hasRole('super_admin')) {
-                                return true;
-                            }
-
-                            return $record === null || $record->user_id === $user->id;
-                        }),
-                ]),
+                        ->visibleOn('create'),
+                ])
+                ->visible(function ($record) {
+                    $user = auth()->user();
+                    return $user->hasRole('super_admin')
+                        || $record === null
+                        || $record->user_id === $user->id;
+                }),
         ]);
     }
 }
