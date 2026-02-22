@@ -6,6 +6,7 @@ use App\Filament\Resources\Panels\Pages\CreatePanel;
 use App\Filament\Resources\Panels\Pages\EditPanel;
 use App\Filament\Resources\Panels\Pages\ListPanels;
 use App\Filament\Resources\Panels\Pages\ViewPanel;
+use App\Filament\Resources\Panels\RelationManagers\AllowedUsersRelationManager;
 use App\Filament\Resources\Panels\RelationManagers\PanelLinksRelationManager;
 use App\Filament\Resources\Panels\Schemas\PanelForm;
 use App\Filament\Resources\Panels\Schemas\PanelInfolist;
@@ -78,6 +79,7 @@ class PanelResource extends Resource
     {
         return [
             PanelLinksRelationManager::class,
+            AllowedUsersRelationManager::class,
         ];
     }
 

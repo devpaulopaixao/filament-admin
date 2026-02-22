@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Panels\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -56,30 +58,46 @@ class PanelForm
 
             Section::make('Acesso')
                 ->description('Defina quais utilizadores podem visualizar este painel.')
-                ->icon(Heroicon::OutlinedUserGroup)
+                ->icon(Heroicon::OutlinedShieldCheck)
                 ->schema([
-                    Select::make('allowedUsers')
-                        ->label('Utilizadores com acesso de visualização')
-                        ->helperText('Apenas disponível para painéis sem grupo. Painéis num grupo herdam o acesso do grupo.')
-                        ->multiple()
-                        ->relationship('allowedUsers', 'name')
-                        ->searchable()
-                        ->preload()
-                        ->columnSpanFull()
+                    // Aviso informativo quando o painel pertence a um grupo (visível a não-admins no edit)
+                    Placeholder::make('group_access_notice')
+                        ->label('Acesso herdado do grupo')
+                        ->content(function ($record) {
+                            $group = $record?->panelGroup?->title ?? 'grupo';
+                            return 'Este painel pertence ao grupo "' . $group . '". O acesso é gerido a nível do grupo.';
+                        })
                         ->visible(function ($record) {
-                            $user = auth()->user();
-
-                            if ($user->hasRole('super_admin')) {
-                                return true;
-                            }
-
-                            if ($record !== null && ! is_null($record->panel_group_id)) {
+                            if ($record === null || is_null($record->panel_group_id)) {
                                 return false;
                             }
+                            $user = auth()->user();
+                            return ! $user->hasRole('super_admin');
+                        })
+                        ->columnSpanFull(),
 
-                            return $record === null || $record->user_id === $user->id;
-                        }),
-                ]),
+                    // Lista de utilizadores — apenas no create (no edit é gerida pelo RelationManager)
+                    CheckboxList::make('allowedUsers')
+                        ->label('Utilizadores com acesso de visualização')
+                        ->helperText('Marque os utilizadores que podem visualizar este painel. Deixe vazio para que apenas o criador tenha acesso.')
+                        ->relationship('allowedUsers', 'name')
+                        ->searchable()
+                        ->bulkToggleable()
+                        ->columns(2)
+                        ->columnSpanFull()
+                        ->visibleOn('create'),
+                ])
+                ->visible(function ($record) {
+                    // No create: sempre visível
+                    if ($record === null) {
+                        return true;
+                    }
+                    // No edit: visível para super_admin, criador, ou para mostrar o aviso de grupo
+                    $user = auth()->user();
+                    return $user->hasRole('super_admin')
+                        || $record->user_id === $user->id
+                        || ! is_null($record->panel_group_id);
+                }),
         ]);
     }
 }

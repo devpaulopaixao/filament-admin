@@ -44,6 +44,27 @@ class PanelInfolist
                 ])
                 ->columns(2),
 
+            Section::make('Acesso')
+                ->icon(Heroicon::OutlinedShieldCheck)
+                ->schema([
+                    // Painel com grupo: acesso herdado
+                    TextEntry::make('panelGroup.title')
+                        ->label('Acesso herdado do grupo')
+                        ->badge()
+                        ->color('primary')
+                        ->visible(fn ($record) => ! is_null($record->panel_group_id))
+                        ->columnSpanFull(),
+
+                    // Painel sem grupo: utilizadores com acesso direto
+                    TextEntry::make('allowedUsers.name')
+                        ->label('Utilizadores com acesso direto')
+                        ->badge()
+                        ->color('gray')
+                        ->placeholder('Apenas o criador')
+                        ->visible(fn ($record) => is_null($record->panel_group_id))
+                        ->columnSpanFull(),
+                ]),
+
             Section::make('Registo')
                 ->icon(Heroicon::OutlinedClock)
                 ->schema([
