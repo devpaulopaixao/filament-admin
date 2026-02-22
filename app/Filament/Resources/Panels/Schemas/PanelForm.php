@@ -2,35 +2,33 @@
 
 namespace App\Filament\Resources\Panels\Schemas;
 
-use App\Models\PanelGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class PanelForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Dados do painel')
+            Section::make('Identificação')
+                ->description('Informações básicas do painel e sua organização em grupos.')
+                ->icon(Heroicon::OutlinedComputerDesktop)
                 ->schema([
                     TextInput::make('title')
                         ->label('Título')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     TextInput::make('hash')
-                        ->label('Hash')
+                        ->label('Hash de acesso')
+                        ->helperText('Identificador único gerado automaticamente, usado na URL pública do painel.')
                         ->readOnly()
                         ->dehydrated(false)
                         ->visibleOn('edit'),
-                    Toggle::make('status')
-                        ->label('Ativo')
-                        ->default(true),
-                    Toggle::make('show_controls')
-                        ->label('Exibir controles de navegação')
-                        ->default(false),
                     Select::make('panel_group_id')
                         ->label('Grupo')
                         ->relationship('panelGroup', 'title')
@@ -41,7 +39,24 @@ class PanelForm
                 ])
                 ->columns(2),
 
+            Section::make('Configurações')
+                ->description('Comportamento e visibilidade do painel na exibição pública.')
+                ->icon(Heroicon::OutlinedAdjustmentsHorizontal)
+                ->schema([
+                    Toggle::make('status')
+                        ->label('Painel ativo')
+                        ->helperText('Quando desativado, a exibição pública mostrará uma tela de painel inativo.')
+                        ->default(true),
+                    Toggle::make('show_controls')
+                        ->label('Exibir controles de navegação')
+                        ->helperText('Mostra botões de pausar, avançar e retroceder na exibição pública.')
+                        ->default(false),
+                ])
+                ->columns(2),
+
             Section::make('Acesso')
+                ->description('Defina quais utilizadores podem visualizar este painel.')
+                ->icon(Heroicon::OutlinedUserGroup)
                 ->schema([
                     Select::make('allowedUsers')
                         ->label('Utilizadores com acesso de visualização')

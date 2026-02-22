@@ -9,13 +9,13 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class PanelsTable
 {
@@ -24,36 +24,38 @@ class PanelsTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Título')
+                    ->label('Painel')
+                    ->weight(FontWeight::Medium)
+                    ->description(fn ($record) => $record->panelGroup?->title ?? 'Sem grupo')
                     ->searchable(),
                 TextColumn::make('hash')
                     ->label('Hash')
-                    ->badge(),
-                TextColumn::make('panelGroup.title')
-                    ->label('Grupo')
-                    ->placeholder('—')
-                    ->searchable(),
-                TextColumn::make('user.name')
-                    ->label('Criado por')
-                    ->searchable(),
+                    ->badge()
+                    ->color('gray')
+                    ->copyable()
+                    ->copyMessage('Hash copiado!'),
                 IconColumn::make('status')
                     ->label('Ativo')
+                    ->boolean(),
+                IconColumn::make('show_controls')
+                    ->label('Controles')
                     ->boolean(),
                 TextColumn::make('links_count')
                     ->label('Links')
                     ->counts('links')
-                    ->badge(),
+                    ->badge()
+                    ->color('info'),
+                TextColumn::make('user.name')
+                    ->label('Criado por')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TernaryFilter::make('panel_group_id')
-                    ->label('Tem grupo')
-                    ->nullable()
-                    ->trueLabel('Com grupo')
-                    ->falseLabel('Sem grupo'),
                 TernaryFilter::make('status')
                     ->label('Estado')
                     ->trueLabel('Ativos')
@@ -78,9 +80,7 @@ class PanelsTable
                     Action::make('open_display')
                         ->label('Abrir exibição')
                         ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
-                        ->url(function ($record) {
-                            return url('/painel/' . $record->hash);
-                        })
+                        ->url(fn ($record) => url('/painel/' . $record->hash))
                         ->openUrlInNewTab(),
                 ]),
             ])

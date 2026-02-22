@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Panels\RelationManagers;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -57,10 +59,13 @@ class PanelLinksRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('title')
                     ->label('Título')
+                    ->weight(FontWeight::Medium)
                     ->searchable(),
                 TextColumn::make('url')
                     ->label('URL')
-                    ->limit(50)
+                    ->limit(45)
+                    ->url(fn ($record) => $record->url)
+                    ->openUrlInNewTab()
                     ->searchable(),
                 TextColumn::make('duration_time')
                     ->label('Duração'),
@@ -69,8 +74,10 @@ class PanelLinksRelationManager extends RelationManager
                     ->boolean(),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 CreateAction::make(),
