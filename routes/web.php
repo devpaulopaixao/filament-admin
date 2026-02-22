@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ScreenDisplayController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,6 +11,4 @@ Route::get('/painel/{hash}', function (string $hash) {
     return view('painel.display', ['hash' => $hash]);
 });
 
-Route::get('/tela/{id}', function (int $id) {
-    return view('tela.display', ['id' => $id]);
-});
+Route::get('/tela/{id}', [ScreenDisplayController::class, 'show']);

@@ -25,12 +25,6 @@ class PanelForm
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull(),
-                    TextInput::make('hash')
-                        ->label('Hash de acesso')
-                        ->helperText('Identificador único gerado automaticamente, usado na URL pública do painel.')
-                        ->readOnly()
-                        ->dehydrated(false)
-                        ->visibleOn('edit'),
                     Select::make('panel_group_id')
                         ->label('Grupo')
                         ->relationship('panelGroup', 'title')

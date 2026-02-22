@@ -35,11 +35,7 @@ class Panel extends Model
     {
         static::creating(function (Panel $panel) {
             if (empty($panel->hash)) {
-                do {
-                    $hash = Str::random(5);
-                } while (static::where('hash', $hash)->exists());
-
-                $panel->hash = $hash;
+                $panel->hash = (string) Str::uuid();
             }
         });
 

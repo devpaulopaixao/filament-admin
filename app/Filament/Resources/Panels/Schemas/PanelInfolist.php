@@ -18,12 +18,6 @@ class PanelInfolist
                 ->schema([
                     TextEntry::make('title')
                         ->label('Título'),
-                    TextEntry::make('hash')
-                        ->label('Hash de acesso')
-                        ->badge()
-                        ->color('gray')
-                        ->copyable()
-                        ->copyMessage('Hash copiado!'),
                     TextEntry::make('panelGroup.title')
                         ->label('Grupo')
                         ->placeholder('Sem grupo'),

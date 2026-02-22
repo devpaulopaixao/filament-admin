@@ -28,12 +28,6 @@ class PanelsTable
                     ->weight(FontWeight::Medium)
                     ->description(fn ($record) => $record->panelGroup?->title ?? 'Sem grupo')
                     ->searchable(),
-                TextColumn::make('hash')
-                    ->label('Hash')
-                    ->badge()
-                    ->color('gray')
-                    ->copyable()
-                    ->copyMessage('Hash copiado!'),
                 IconColumn::make('status')
                     ->label('Ativo')
                     ->boolean(),
