@@ -29,6 +29,17 @@ function buildEcho() {
     });
 }
 
+// Inject CSS keyframes once (animations cannot be done with inline styles alone)
+(function () {
+    if (document.getElementById('_panel_kf')) return;
+    var s = document.createElement('style');
+    s.id = '_panel_kf';
+    s.textContent =
+        '@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}' +
+        '@keyframes bounceDot{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-7px);opacity:1}}';
+    document.head.appendChild(s);
+}());
+
 // ---------------------------------------------------------------------------
 // Status screens
 // ---------------------------------------------------------------------------
@@ -55,16 +66,40 @@ function Inactive() {
 
 function NoLinks() {
     return (
-        <div style={styles.centered}>
-            <span style={styles.message}>Nenhum link disponível</span>
+        <div style={styles.statusPage}>
+            <div style={styles.statusCard}>
+                <div style={styles.iconWrap}>
+                    <svg viewBox="0 0 24 24" fill="none" style={styles.statusIcon}>
+                        <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M8 10h8" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 2"/>
+                    </svg>
+                </div>
+                <p style={styles.statusLabel}>Sem conteúdo</p>
+                <p style={styles.statusSub}>Este painel não tem links activos para exibir.</p>
+            </div>
         </div>
     );
 }
 
 function Loading() {
     return (
-        <div style={styles.centered}>
-            <span style={styles.message}>Carregando...</span>
+        <div style={styles.statusPage}>
+            <div style={styles.statusCard}>
+                <div style={styles.iconWrap}>
+                    <svg viewBox="0 0 24 24" fill="none" style={styles.statusIcon}>
+                        <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                        <path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    <div style={styles.loadingDot} />
+                </div>
+                <p style={styles.statusLabel}>A carregar</p>
+                <div style={styles.loadingDots}>
+                    <span style={Object.assign({}, styles.dot, styles.dot1)} />
+                    <span style={Object.assign({}, styles.dot, styles.dot2)} />
+                    <span style={Object.assign({}, styles.dot, styles.dot3)} />
+                </div>
+            </div>
         </div>
     );
 }
@@ -286,20 +321,36 @@ function PanelDisplay({ hash }) {
 // ---------------------------------------------------------------------------
 
 var styles = {
-    centered: {
+    // loading dots
+    loadingDot: {
+        position: 'absolute',
+        bottom: '-2px',
+        right: '-2px',
+        width: '14px',
+        height: '14px',
+        borderRadius: '50%',
+        background: '#3b82f6',
+        border: '2px solid #030712',
+        boxShadow: '0 0 10px rgba(59,130,246,0.8)',
+        animation: 'pulseDot 1.4s ease-in-out infinite',
+    },
+    loadingDots: {
         display: 'flex',
+        gap: '8px',
         alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100vh',
-        background: '#0a0a0a',
+        marginTop: '4px',
     },
-    message: {
-        color: 'rgba(255,255,255,0.5)',
-        fontSize: '1.25rem',
-        fontFamily: 'system-ui, sans-serif',
-        letterSpacing: '0.02em',
+    dot: {
+        display: 'inline-block',
+        width: '7px',
+        height: '7px',
+        borderRadius: '50%',
+        background: 'rgba(255,255,255,0.3)',
+        animation: 'bounceDot 1.1s ease-in-out infinite',
     },
+    dot1: { animationDelay: '0s' },
+    dot2: { animationDelay: '0.18s' },
+    dot3: { animationDelay: '0.36s' },
     iframe: {
         width: '100%',
         height: '100vh',
