@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Screen;
 use App\Models\ScreenAccessLog;
+use App\Services\DisplayEncryption;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -29,7 +30,10 @@ class ScreenDisplayController extends Controller
             ]
         );
 
-        return view('tela.display', ['id' => $id]);
+        $token   = DisplayEncryption::generateToken('screen', (string) $id);
+        $pageKey = DisplayEncryption::getPageKey($token);
+
+        return view('tela.display', compact('id', 'token', 'pageKey'));
     }
 
     private function detectDevice(string $ua): string

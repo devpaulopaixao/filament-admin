@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
+import { importKey, decryptResponse } from './crypto-utils.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -64,7 +65,7 @@ function Loading() {
 // Main component
 // ---------------------------------------------------------------------------
 
-function ScreenDisplay({ id }) {
+function ScreenDisplay({ id, pageToken, pageKey }) {
     var [screen, setScreen] = useState(null);
 
     // Update browser tab title
@@ -74,12 +75,28 @@ function ScreenDisplay({ id }) {
         }
     }, [screen]);
 
-    // Fetch initial data
+    // Fetch initial data (encrypted)
     useEffect(function () {
-        fetch('/api/screens/' + id)
-            .then(function (res) { return res.json(); })
+        importKey(pageKey)
+            .then(function (keyBytes) {
+                return fetch('/api/display', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: pageToken }),
+                })
+                .then(function (res) {
+                    if (!res.ok) {
+                        return res.text().then(function (body) {
+                            throw new Error('HTTP ' + res.status + ': ' + body);
+                        });
+                    }
+                    return res.json();
+                })
+                .then(function (envelope) { return decryptResponse(envelope, keyBytes); });
+            })
             .then(function (data) { setScreen(data); })
-            .catch(function () {
+            .catch(function (err) {
+                console.error('[tela] Falha ao carregar:', err);
                 setScreen({ status: false, panel_hash: null });
             });
     }, [id]);
@@ -203,6 +220,8 @@ var styles = {
 
 var root = document.getElementById('screen-display');
 if (root) {
-    var id = root.getAttribute('data-id');
-    createRoot(root).render(<ScreenDisplay id={id} />);
+    var id        = root.getAttribute('data-id');
+    var pageToken = root.getAttribute('data-token');
+    var pageKey   = root.getAttribute('data-key');
+    createRoot(root).render(<ScreenDisplay id={id} pageToken={pageToken} pageKey={pageKey} />);
 }

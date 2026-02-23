@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
+import { importKey, decryptResponse } from './crypto-utils.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -175,7 +176,7 @@ function StatusBar({ link, currentIndex, total, elapsed, durationMs, showControl
 // Main component
 // ---------------------------------------------------------------------------
 
-function PanelDisplay({ hash }) {
+function PanelDisplay({ hash, pageToken, pageKey }) {
     var [panel, setPanel] = useState(null);
     var [currentIndex, setCurrentIndex] = useState(0);
     var [elapsed, setElapsed] = useState(0);
@@ -189,12 +190,33 @@ function PanelDisplay({ hash }) {
         }
     }, [panel]);
 
-    // Fetch initial data
+    // Fetch initial data (encrypted)
     useEffect(function () {
-        fetch('/api/panels/' + hash)
-            .then(function (res) { return res.json(); })
-            .then(function (data) { setPanel(data); setCurrentIndex(0); setElapsed(0); setIsPaused(false); })
-            .catch(function () {
+        importKey(pageKey)
+            .then(function (keyBytes) {
+                return fetch('/api/display', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: pageToken }),
+                })
+                .then(function (res) {
+                    if (!res.ok) {
+                        return res.text().then(function (body) {
+                            throw new Error('HTTP ' + res.status + ': ' + body);
+                        });
+                    }
+                    return res.json();
+                })
+                .then(function (envelope) { return decryptResponse(envelope, keyBytes); });
+            })
+            .then(function (data) {
+                setPanel(data);
+                setCurrentIndex(0);
+                setElapsed(0);
+                setIsPaused(false);
+            })
+            .catch(function (err) {
+                console.error('[painel] Falha ao carregar:', err);
                 setPanel({ status: false, links: [] });
             });
     }, [hash]);
@@ -490,6 +512,8 @@ var styles = {
 
 var root = document.getElementById('panel-display');
 if (root) {
-    var hash = root.getAttribute('data-hash');
-    createRoot(root).render(<PanelDisplay hash={hash} />);
+    var hash      = root.getAttribute('data-hash');
+    var pageToken = root.getAttribute('data-token');
+    var pageKey   = root.getAttribute('data-key');
+    createRoot(root).render(<PanelDisplay hash={hash} pageToken={pageToken} pageKey={pageKey} />);
 }

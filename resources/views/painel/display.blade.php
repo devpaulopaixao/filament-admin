@@ -12,6 +12,9 @@
     @vite(['resources/js/panel-display.jsx'])
 </head>
 <body>
-    <div id="panel-display" data-hash="{{ $hash }}"></div>
+    <div id="panel-display"
+         data-hash="{{ $hash }}"
+         data-token="{{ $token }}"
+         data-key="{{ $pageKey }}"></div>
 </body>
 </html>

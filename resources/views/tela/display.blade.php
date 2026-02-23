@@ -12,6 +12,9 @@
     @vite(['resources/js/screen-display.jsx'])
 </head>
 <body>
-    <div id="screen-display" data-id="{{ $id }}"></div>
+    <div id="screen-display"
+         data-id="{{ $id }}"
+         data-token="{{ $token }}"
+         data-key="{{ $pageKey }}"></div>
 </body>
 </html>
