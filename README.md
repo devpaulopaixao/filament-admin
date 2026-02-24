@@ -1,66 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gestão de Painéis
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web para gerenciamento e exibição de painéis digitais em telas, com controle de acesso por usuário, transmissão em tempo real e painel administrativo completo.
 
-## About Laravel
+## Proposta
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+A aplicação permite que administradores criem **painéis** compostos por links/recursos e os associem a **telas** físicas (TVs, monitores, totens). Cada tela exibe o painel designado em tempo real, com atualizações instantâneas via WebSocket. O sistema conta com controle granular de permissões, registro de acessos e agrupamento de painéis por categorias.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Camada | Tecnologia |
+|---|---|
+| Framework PHP | Laravel 11 |
+| Painel Admin | Filament 4.0 |
+| Controle de Papéis e Permissões | Spatie Laravel Permission + Filament Shield |
+| WebSocket / Broadcast | Laravel Reverb |
+| Banco de Dados | MySQL |
+| Frontend (Admin) | Livewire + Alpine.js (via Filament) |
+| Build Assets | Vite |
 
-## Learning Laravel
+## Recursos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Painéis
+- Criação de painéis com título, status ativo/inativo e hash UUID único
+- Agrupamento de painéis em **grupos** (PanelGroups) para organização
+- Adição de **links** ordenados por número de exibição em cada painel
+- Opção de exibir ou ocultar controles na tela pública
+- Controle de usuários com acesso a cada painel (relação many-to-many)
+- Transmissão automática via broadcast a cada atualização (`PanelUpdated`)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Telas (Screens)
+- Cadastro de telas vinculadas a painéis
+- Controle de usuários com acesso a cada tela
+- Registro de logs de acesso (`ScreenAccessLog`) com data
+- Transmissão automática via broadcast a cada atualização (`ScreenUpdated`)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Usuários e Permissões
+- Gerenciamento completo de usuários no painel Filament
+- Papéis e permissões com **Spatie Permission** integrado ao **Filament Shield**
+- Controle de acesso por recurso no painel administrativo
 
-## Laravel Sponsors
+### Dashboard
+- Widgets de estatísticas gerais (`StatsOverviewWidget`)
+- Listagem dos últimos painéis criados (`LatestPanelsWidget`)
+- Listagem das últimas telas criadas (`LatestScreensWidget`)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalação
 
-### Premium Partners
+```bash
+git clone <repositório>
+cd filament-admin
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Configure o arquivo `.env` com as credenciais do banco de dados e do Reverb, depois execute:
 
-## Contributing
+```bash
+php artisan migrate
+php artisan db:seed          # opcional — popula dados iniciais
+php artisan filament:install --shield  # configura permissões do Filament Shield
+npm run build
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Executar em desenvolvimento
 
-## Code of Conduct
+Em terminais separados:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan serve            # servidor HTTP
+php artisan reverb:start     # servidor WebSocket
+npm run dev                  # Vite com hot-reload
+```
 
-## Security Vulnerabilities
+## Variáveis de Ambiente Relevantes
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+APP_NAME="Gestão de painéis"
+APP_URL=http://seu-dominio.com
+APP_TIMEZONE=America/Sao_Paulo
 
-## License
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=...
+REVERB_APP_KEY=...
+REVERB_APP_SECRET=...
+REVERB_HOST=localhost
+REVERB_PORT=8080
+```
+
+## Licença
+
+Este projeto está licenciado sob a [MIT license](https://opensource.org/licenses/MIT).
