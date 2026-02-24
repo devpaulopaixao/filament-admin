@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ScreenResource extends Resource
 {
@@ -29,6 +30,21 @@ class ScreenResource extends Resource
     protected static ?string $modelLabel = 'Tela';
 
     protected static ?string $pluralModelLabel = 'Telas';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Painel' => optional($record->panel)->title ?? '—',
+            'Status' => $record->status ? 'Ativo' : 'Inativo',
+        ];
+    }
 
     public static function getEloquentQuery(): Builder
     {

@@ -194,6 +194,7 @@ return [
         'prefix' => 'view',
         'exclude' => [
             \Filament\Pages\Dashboard::class,
+            \App\Filament\Pages\Dashboard::class,
         ],
     ],
 
@@ -214,6 +215,9 @@ return [
         'exclude' => [
             \Filament\Widgets\AccountWidget::class,
             \Filament\Widgets\FilamentInfoWidget::class,
+            \App\Filament\Widgets\StatsOverviewWidget::class,
+            \App\Filament\Widgets\LatestPanelsWidget::class,
+            \App\Filament\Widgets\LatestScreensWidget::class,
         ],
     ],
 

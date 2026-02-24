@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Roles;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Resources\Roles\Pages\CreateRole;
+use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
 use App\Filament\Resources\Roles\Pages\ViewRole;
@@ -27,7 +28,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 
@@ -41,6 +45,19 @@ class RoleResource extends Resource
     use HasShieldFormComponents;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'guard_name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            __('filament-shield::filament-shield.column.guard_name') => $record->guard_name,
+            __('filament-shield::filament-shield.column.permissions') => $record->permissions()->count(),
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -112,12 +129,48 @@ class RoleResource extends Resource
                     ->label(__('filament-shield::filament-shield.column.permissions'))
                     ->counts('permissions')
                     ->color('primary'),
+                TextColumn::make('created_at')
+                    ->label(__('filament-shield::filament-shield.column.created_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label(__('filament-shield::filament-shield.column.updated_at'))
-                    ->dateTime(),
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('guard_name')
+                    ->label(__('filament-shield::filament-shield.column.guard_name'))
+                    ->options(fn (): array => \Spatie\Permission\Models\Role::query()->distinct()->pluck('guard_name', 'guard_name')->toArray()),
+                Filter::make('created_at')
+                    ->label(__('filament-shield::filament-shield.column.created_at'))
+                    ->form([
+                        \Filament\Forms\Components\DatePicker::make('created_from')
+                            ->label('De'),
+                        \Filament\Forms\Components\DatePicker::make('created_until')
+                            ->label('Até'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], function (Builder $q) use ($data) {
+                                return $q->whereDate('created_at', '>=', $data['created_from']);
+                            })
+                            ->when($data['created_until'], function (Builder $q) use ($data) {
+                                return $q->whereDate('created_at', '<=', $data['created_until']);
+                            });
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['created_from'] ?? null) {
+                            $indicators[] = 'Criado a partir de ' . \Carbon\Carbon::parse($data['created_from'])->toFormattedDateString();
+                        }
+                        if ($data['created_until'] ?? null) {
+                            $indicators[] = 'Criado até ' . \Carbon\Carbon::parse($data['created_until'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->recordActions([
                 ActionGroup::make([

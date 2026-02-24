@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class PanelResource extends Resource
 {
@@ -30,6 +31,21 @@ class PanelResource extends Resource
     protected static ?string $modelLabel = 'Painel';
 
     protected static ?string $pluralModelLabel = 'Painéis';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Grupo' => optional($record->panelGroup)->title ?? '—',
+            'Status' => $record->status ? 'Ativo' : 'Inativo',
+        ];
+    }
 
     public static function getEloquentQuery(): Builder
     {

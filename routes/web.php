@@ -5,7 +5,7 @@ use App\Services\DisplayEncryption;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });
 
 Route::get('/painel/{hash}', function (string $hash) {
