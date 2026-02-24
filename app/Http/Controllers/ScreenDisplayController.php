@@ -17,7 +17,7 @@ class ScreenDisplayController extends Controller
         $userAgent   = $request->userAgent() ?? '';
         $deviceType  = $this->detectDevice($userAgent);
 
-        // Garante apenas 1 registo por dia, por IP, por dispositivo
+        // Garante apenas 1 registro por dia, por IP, por dispositivo
         ScreenAccessLog::firstOrCreate(
             [
                 'screen_id'   => $screen->id,

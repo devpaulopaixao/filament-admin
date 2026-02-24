@@ -59,7 +59,7 @@ class PanelInfolist
                         ->columnSpanFull(),
                 ]),
 
-            Section::make('Registo')
+            Section::make('Registro')
                 ->icon(Heroicon::OutlinedClock)
                 ->schema([
                     TextEntry::make('created_at')

@@ -6,6 +6,7 @@ use App\Models\PanelGroup;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -67,6 +68,11 @@ class PanelsTable
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make()
+                        ->visible(function ($record) {
+                            $user = auth()->user();
+                            return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                    DeleteAction::make()
                         ->visible(function ($record) {
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;

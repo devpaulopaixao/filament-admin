@@ -50,7 +50,7 @@ class PanelGroupInfolist
                         ->columnSpanFull(),
                 ]),
 
-            Section::make('Registo')
+            Section::make('Registro')
                 ->description('Datas de criação e última atualização.')
                 ->icon(Heroicon::OutlinedClock)
                 ->schema([
