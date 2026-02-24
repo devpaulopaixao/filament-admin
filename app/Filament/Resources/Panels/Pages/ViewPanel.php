@@ -10,6 +10,8 @@ class ViewPanel extends ViewRecord
 {
     protected static string $resource = PanelResource::class;
 
+    protected static ?string $title = 'Visualizar painel';
+
     protected function getHeaderActions(): array
     {
         return [

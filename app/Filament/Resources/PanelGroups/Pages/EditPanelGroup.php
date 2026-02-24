@@ -11,6 +11,8 @@ class EditPanelGroup extends EditRecord
 {
     protected static string $resource = PanelGroupResource::class;
 
+    protected static ?string $title = 'Editar grupo de painéis';
+
     protected function getHeaderActions(): array
     {
         return [

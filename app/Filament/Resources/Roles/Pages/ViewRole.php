@@ -12,6 +12,8 @@ class ViewRole extends ViewRecord
 {
     protected static string $resource = RoleResource::class;
 
+    protected static ?string $title = 'Visualizar perfil';
+
     protected function getActions(): array
     {
         return [

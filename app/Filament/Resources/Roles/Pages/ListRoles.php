@@ -12,6 +12,8 @@ class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
+    protected static ?string $title = 'Perfis';
+
     protected function getActions(): array
     {
         return [

@@ -9,6 +9,8 @@ class CreateScreen extends CreateRecord
 {
     protected static string $resource = ScreenResource::class;
 
+    protected static ?string $title = 'Criar Tela';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();

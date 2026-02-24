@@ -9,6 +9,8 @@ class CreatePanel extends CreateRecord
 {
     protected static string $resource = PanelResource::class;
 
+    protected static ?string $title = 'Criar painel';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();

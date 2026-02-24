@@ -11,6 +11,8 @@ class EditScreen extends EditRecord
 {
     protected static string $resource = ScreenResource::class;
 
+    protected static ?string $title = 'Editar tela';
+
     protected function getHeaderActions(): array
     {
         return [

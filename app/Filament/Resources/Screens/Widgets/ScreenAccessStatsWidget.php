@@ -38,7 +38,7 @@ class ScreenAccessStatsWidget extends StatsOverviewWidget
 
         return [
             Stat::make('Total de acessos', $total)
-                ->description('desde o início do registo')
+                ->description('desde o início do registro')
                 ->color('primary'),
 
             Stat::make('Últimas 24 horas', $last24h)

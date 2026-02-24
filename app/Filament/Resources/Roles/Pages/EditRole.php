@@ -17,6 +17,8 @@ class EditRole extends EditRecord
 
     protected static string $resource = RoleResource::class;
 
+    protected static ?string $title = 'Editar perfil';
+
     protected function getActions(): array
     {
         return [

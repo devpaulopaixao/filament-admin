@@ -13,6 +13,8 @@ class CreateUser extends CreateRecord
 
     protected static string $resource = UserResource::class;
 
+    protected static ?string $title = 'Criar usuário';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $nonPermissionKeys = ['name', 'email', 'email_verified_at', 'password', 'roles', 'select_all'];

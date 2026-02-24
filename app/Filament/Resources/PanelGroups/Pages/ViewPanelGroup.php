@@ -10,6 +10,8 @@ class ViewPanelGroup extends ViewRecord
 {
     protected static string $resource = PanelGroupResource::class;
 
+    protected static ?string $title = 'Visualizar grupo de painéis';
+
     protected function getHeaderActions(): array
     {
         return [

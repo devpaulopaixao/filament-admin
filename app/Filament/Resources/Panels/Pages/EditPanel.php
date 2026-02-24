@@ -11,6 +11,8 @@ class EditPanel extends EditRecord
 {
     protected static string $resource = PanelResource::class;
 
+    protected static ?string $title = 'Editar painel';
+
     protected function getHeaderActions(): array
     {
         return [

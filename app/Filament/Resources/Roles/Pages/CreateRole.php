@@ -16,6 +16,8 @@ class CreateRole extends CreateRecord
 
     protected static string $resource = RoleResource::class;
 
+    protected static ?string $title = 'Criar perfil';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $this->permissions = collect($data)

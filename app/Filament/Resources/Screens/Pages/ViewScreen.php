@@ -12,6 +12,8 @@ class ViewScreen extends ViewRecord
 {
     protected static string $resource = ScreenResource::class;
 
+    protected static ?string $title = 'Visualizar tela';
+
     protected function getHeaderActions(): array
     {
         return [
