@@ -58,10 +58,6 @@ class LatestPanelsWidget extends BaseWidget
                         return $record->panelGroup?->title ?? 'Sem grupo';
                     })
                     ->searchable(false),
-                TextColumn::make('hash')
-                    ->label('Hash')
-                    ->badge()
-                    ->color('gray'),
                 IconColumn::make('status')
                     ->label('Ativo')
                     ->boolean(),

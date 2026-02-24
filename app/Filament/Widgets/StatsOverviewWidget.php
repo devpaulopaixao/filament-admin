@@ -88,7 +88,7 @@ class StatsOverviewWidget extends BaseWidget
                 ->color('warning');
 
             $stats[] = Stat::make('Utilizadores', $totalUsers)
-                ->description('registados no sistema')
+                ->description('registrados no sistema')
                 ->icon(Heroicon::OutlinedUserGroup)
                 ->color('gray');
         }

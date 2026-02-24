@@ -39,9 +39,9 @@ class PanelLinksRelationManager extends RelationManager
                 ->columnSpanFull(),
             TimePicker::make('duration_time')
                 ->label('Duração')
-                ->seconds(false)
-                ->displayFormat('H:i')
-                ->format('H:i')
+                ->seconds(true)
+                ->displayFormat('H:i:s')
+                ->format('H:i:s')
                 ->required(),
             Toggle::make('status')
                 ->label('Ativo')
