@@ -54,10 +54,16 @@ class UsersTable
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
-                    EditAction::make(),
-                    DeleteAction::make(),
-                    RestoreAction::make(),
-                    ForceDeleteAction::make(),
+                    EditAction::make()
+                        ->visible(fn ($record) => !$record->trashed()),
+                    DeleteAction::make()
+                        ->visible(fn ($record) => !$record->trashed()),
+                    RestoreAction::make()
+                        ->visible(fn ($record) => $record->trashed()),
+                    ForceDeleteAction::make()
+                        ->visible(function ($record) {
+                            return $record->trashed() && auth()->user()->hasRole('super_admin');
+                        }),
                 ]),
             ])
             ->toolbarActions([

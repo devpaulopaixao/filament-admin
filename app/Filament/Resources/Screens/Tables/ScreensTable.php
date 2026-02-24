@@ -8,6 +8,10 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
@@ -15,6 +19,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class ScreensTable
@@ -47,6 +52,7 @@ class ScreensTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                TrashedFilter::make(),
                 TernaryFilter::make('status')
                     ->label('Estado')
                     ->trueLabel('Ativas')
@@ -61,13 +67,25 @@ class ScreensTable
                     ViewAction::make(),
                     EditAction::make()
                         ->visible(function ($record) {
+                            if ($record->trashed()) return false;
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
                         }),
                     DeleteAction::make()
                         ->visible(function ($record) {
+                            if ($record->trashed()) return false;
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                    RestoreAction::make()
+                        ->visible(function ($record) {
+                            if (!$record->trashed()) return false;
+                            $user = auth()->user();
+                            return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                    ForceDeleteAction::make()
+                        ->visible(function ($record) {
+                            return $record->trashed() && auth()->user()->hasRole('super_admin');
                         }),
                     Action::make('open_display')
                         ->label('Abrir exibição')
@@ -78,6 +96,8 @@ class ScreensTable
             ])
             ->toolbarActions([
                 DeleteBulkAction::make(),
+                RestoreBulkAction::make(),
+                ForceDeleteBulkAction::make(),
             ]);
     }
 }
