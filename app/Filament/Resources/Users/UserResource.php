@@ -34,6 +34,12 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Usuários';
+
+    protected static ?string $modelLabel = 'Usuário';
+
+    protected static ?string $pluralModelLabel = 'Usuários';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function getGloballySearchableAttributes(): array
