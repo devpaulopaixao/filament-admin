@@ -46,6 +46,12 @@ class RoleResource extends Resource
     use Essentials\HasNavigation;
     use HasShieldFormComponents;
 
+    protected static ?string $navigationLabel = 'Perfis';
+
+    protected static ?string $modelLabel = 'Perfil';
+
+    protected static ?string $pluralModelLabel = 'Perfis';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function getGloballySearchableAttributes(): array
