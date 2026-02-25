@@ -130,7 +130,7 @@ class RoleResource extends Resource
                     ->counts('permissions')
                     ->color('primary'),
                 TextColumn::make('created_at')
-                    ->label(__('filament-shield::filament-shield.column.created_at'))
+                    ->label('Criado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
