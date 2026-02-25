@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Panels\Pages;
 
 use App\Filament\Resources\Panels\PanelResource;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Icons\Heroicon;
 
 class ViewPanel extends ViewRecord
 {
@@ -15,6 +17,12 @@ class ViewPanel extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('open_display')
+                ->label('Ver exibição')
+                ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                ->color('success')
+                ->url(url('/painel/' . $this->getRecord()->hash))
+                ->openUrlInNewTab(),
             PanelResource::duplicateAction(),
             EditAction::make(),
         ];

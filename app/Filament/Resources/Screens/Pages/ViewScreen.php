@@ -5,8 +5,10 @@ namespace App\Filament\Resources\Screens\Pages;
 use App\Filament\Resources\Screens\ScreenResource;
 use App\Filament\Resources\Screens\Widgets\ScreenAccessChartWidget;
 use App\Filament\Resources\Screens\Widgets\ScreenAccessStatsWidget;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Icons\Heroicon;
 
 class ViewScreen extends ViewRecord
 {
@@ -17,6 +19,12 @@ class ViewScreen extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('open_display')
+                ->label('Ver exibição')
+                ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                ->color('success')
+                ->url(url('/tela/' . $this->getRecord()->id))
+                ->openUrlInNewTab(),
             EditAction::make(),
         ];
     }
