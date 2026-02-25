@@ -11,8 +11,11 @@ use App\Filament\Resources\Users\Schemas\UserInfolist;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -20,6 +23,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserResource extends Resource
 {
@@ -107,6 +112,60 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return UsersTable::configure($table);
+    }
+
+    public static function duplicateAction(): Action
+    {
+        return Action::make('duplicate')
+            ->label('Duplicar')
+            ->icon('heroicon-o-document-duplicate')
+            ->color('info')
+            ->requiresConfirmation()
+            ->modalHeading('Duplicar usuário')
+            ->modalDescription('Um novo usuário será criado com os mesmos roles e permissões diretas deste.')
+            ->modalSubmitActionLabel('Duplicar')
+            ->action(function (Model $record): void {
+                [$localPart, $domain] = explode('@', $record->email, 2);
+                $baseEmail = 'copia.' . $localPart . '@' . $domain;
+                $newEmail = $baseEmail;
+                $counter = 1;
+
+                while (User::where('email', $newEmail)->exists()) {
+                    $newEmail = 'copia' . $counter . '.' . $localPart . '@' . $domain;
+                    $counter++;
+                }
+
+                $newUser = User::create([
+                    'name'     => 'Cópia de ' . $record->name,
+                    'email'    => $newEmail,
+                    'password' => Hash::make(Str::random(16)),
+                ]);
+
+                $newUser->syncRoles($record->roles);
+
+                $guard = Utils::getFilamentAuthGuard();
+                $directPermissions = $record->getDirectPermissions();
+
+                if ($directPermissions->isNotEmpty()) {
+                    $permissionModels = collect();
+                    $directPermissions->each(function ($permission) use ($permissionModels, $guard) {
+                        $permissionModels->push(
+                            Utils::getPermissionModel()::firstOrCreate([
+                                'name'       => $permission->name,
+                                'guard_name' => $guard,
+                            ])
+                        );
+                    });
+
+                    $newUser->syncPermissions($permissionModels);
+                }
+
+                Notification::make()
+                    ->title('Usuário duplicado com sucesso!')
+                    ->body('O usuário "' . $newUser->name . '" foi criado com os mesmos roles e permissões.')
+                    ->success()
+                    ->send();
+            });
     }
 
     public static function getRelations(): array

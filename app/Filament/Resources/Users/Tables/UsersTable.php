@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Users\UserResource;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -55,6 +56,8 @@ class UsersTable
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make()
+                        ->visible(fn ($record) => !$record->trashed()),
+                    UserResource::duplicateAction()
                         ->visible(fn ($record) => !$record->trashed()),
                     DeleteAction::make()
                         ->visible(fn ($record) => !$record->trashed()),

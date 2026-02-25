@@ -13,11 +13,13 @@ use App\Filament\Resources\Roles\Pages\ViewRole;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use BezhanSalleh\PluginEssentials\Concerns\Resource as Essentials;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -176,12 +178,58 @@ class RoleResource extends Resource
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
+                    static::duplicateAction(),
                     DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function duplicateAction(): Action
+    {
+        return Action::make('duplicate')
+            ->label('Duplicar')
+            ->icon('heroicon-o-document-duplicate')
+            ->color('info')
+            ->requiresConfirmation()
+            ->modalHeading('Duplicar perfil')
+            ->modalDescription('Um novo perfil será criado com todas as permissões deste.')
+            ->modalSubmitActionLabel('Duplicar')
+            ->action(function (Model $record): void {
+                $roleModel = Utils::getRoleModel();
+
+                $baseName = 'Cópia de ' . $record->name;
+                $newName = $baseName;
+                $counter = 1;
+
+                while ($roleModel::where('name', $newName)->exists()) {
+                    $newName = $baseName . ' (' . $counter . ')';
+                    $counter++;
+                }
+
+                $attributes = [
+                    'name' => $newName,
+                    'guard_name' => $record->guard_name,
+                ];
+
+                if (Utils::isTenancyEnabled()) {
+                    $teamForeignKey = Utils::getTenantModelForeignKey();
+                    if (!empty($record->{$teamForeignKey})) {
+                        $attributes[$teamForeignKey] = $record->{$teamForeignKey};
+                    }
+                }
+
+                $newRole = $roleModel::create($attributes);
+                $newRole->syncPermissions($record->permissions);
+
+                Notification::make()
+                    ->title('Perfil duplicado com sucesso!')
+                    ->body('O perfil "' . $newName . '" foi criado com todas as permissões.')
+                    ->success()
+                    ->send();
+            });
     }
 
     public static function getRelations(): array

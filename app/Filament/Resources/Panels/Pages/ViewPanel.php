@@ -15,6 +15,7 @@ class ViewPanel extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            PanelResource::duplicateAction(),
             EditAction::make(),
         ];
     }

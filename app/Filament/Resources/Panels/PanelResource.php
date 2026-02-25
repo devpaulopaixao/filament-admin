@@ -12,7 +12,10 @@ use App\Filament\Resources\Panels\Schemas\PanelForm;
 use App\Filament\Resources\Panels\Schemas\PanelInfolist;
 use App\Filament\Resources\Panels\Tables\PanelsTable;
 use App\Models\Panel;
+use App\Models\PanelLink;
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -89,6 +92,55 @@ class PanelResource extends Resource
     public static function table(Table $table): Table
     {
         return PanelsTable::configure($table);
+    }
+
+    public static function duplicateAction(): Action
+    {
+        return Action::make('duplicate')
+            ->label('Duplicar')
+            ->icon('heroicon-o-document-duplicate')
+            ->color('info')
+            ->requiresConfirmation()
+            ->modalHeading('Duplicar painel')
+            ->modalDescription('Um novo painel será criado com os mesmos links e utilizadores permitidos deste.')
+            ->modalSubmitActionLabel('Duplicar')
+            ->action(function (Model $record): void {
+                $baseName = 'Cópia de ' . $record->title;
+                $newTitle = $baseName;
+                $counter = 1;
+
+                while (Panel::where('title', $newTitle)->exists()) {
+                    $newTitle = $baseName . ' (' . $counter . ')';
+                    $counter++;
+                }
+
+                $newPanel = Panel::create([
+                    'user_id'        => auth()->id(),
+                    'panel_group_id' => $record->panel_group_id,
+                    'title'          => $newTitle,
+                    'status'         => $record->status,
+                    'show_controls'  => $record->show_controls,
+                ]);
+
+                $record->links->each(function (PanelLink $link) use ($newPanel): void {
+                    PanelLink::create([
+                        'panel_id'       => $newPanel->id,
+                        'title'          => $link->title,
+                        'url'            => $link->url,
+                        'status'         => $link->status,
+                        'duration_time'  => $link->duration_time,
+                        'display_number' => $link->display_number,
+                    ]);
+                });
+
+                $newPanel->allowedUsers()->sync($record->allowedUsers->pluck('id'));
+
+                Notification::make()
+                    ->title('Painel duplicado com sucesso!')
+                    ->body('O painel "' . $newTitle . '" foi criado com todos os links e acessos.')
+                    ->success()
+                    ->send();
+            });
     }
 
     public static function getRelations(): array

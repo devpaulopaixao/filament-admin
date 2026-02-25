@@ -17,6 +17,7 @@ class ViewRole extends ViewRecord
     protected function getActions(): array
     {
         return [
+            RoleResource::duplicateAction(),
             EditAction::make(),
         ];
     }

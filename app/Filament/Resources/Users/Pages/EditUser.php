@@ -21,6 +21,7 @@ class EditUser extends EditRecord
     {
         return [
             ViewAction::make(),
+            UserResource::duplicateAction(),
             DeleteAction::make(),
         ];
     }

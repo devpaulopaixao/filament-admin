@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Panels\Tables;
 
+use App\Filament\Resources\Panels\PanelResource;
 use App\Models\PanelGroup;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -74,6 +75,12 @@ class PanelsTable
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make()
+                        ->visible(function ($record) {
+                            if ($record->trashed()) return false;
+                            $user = auth()->user();
+                            return $user->hasRole('super_admin') || $record->user_id === $user->id;
+                        }),
+                    PanelResource::duplicateAction()
                         ->visible(function ($record) {
                             if ($record->trashed()) return false;
                             $user = auth()->user();

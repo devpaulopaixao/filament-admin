@@ -17,6 +17,7 @@ class EditPanel extends EditRecord
     {
         return [
             ViewAction::make(),
+            PanelResource::duplicateAction(),
             DeleteAction::make(),
         ];
     }
