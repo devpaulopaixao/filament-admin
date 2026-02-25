@@ -73,8 +73,10 @@ class PanelsTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
+                    ViewAction::make()
+                        ->label('Visualizar'),
                     EditAction::make()
+                        ->label('Editar')
                         ->visible(function ($record) {
                             if ($record->trashed()) return false;
                             $user = auth()->user();
@@ -87,18 +89,21 @@ class PanelsTable
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
                         }),
                     DeleteAction::make()
+                        ->label('Excluir')
                         ->visible(function ($record) {
                             if ($record->trashed()) return false;
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
                         }),
                     RestoreAction::make()
+                        ->label('Restaurar')
                         ->visible(function ($record) {
                             if (!$record->trashed()) return false;
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
                         }),
                     ForceDeleteAction::make()
+                        ->label('Excluir permanentemente')
                         ->visible(function ($record) {
                             return $record->trashed() && auth()->user()->hasRole('super_admin');
                         }),

@@ -54,16 +54,22 @@ class UsersTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
+                    ViewAction::make()
+                        ->label('Visualizar'),
                     EditAction::make()
+                        ->label('Editar')
                         ->visible(fn ($record) => !$record->trashed()),
                     UserResource::duplicateAction()
+                        ->label('Duplicar')
                         ->visible(fn ($record) => !$record->trashed()),
                     DeleteAction::make()
+                        ->label('Excluir')
                         ->visible(fn ($record) => !$record->trashed()),
                     RestoreAction::make()
+                        ->label('Restaurar')
                         ->visible(fn ($record) => $record->trashed()),
                     ForceDeleteAction::make()
+                        ->label('Excluir Permanentemente')
                         ->visible(function ($record) {
                             return $record->trashed() && auth()->user()->hasRole('super_admin');
                         }),

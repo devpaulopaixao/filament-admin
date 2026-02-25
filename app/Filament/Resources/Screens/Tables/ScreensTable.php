@@ -64,14 +64,17 @@ class ScreensTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
+                    ViewAction::make()
+                    ->label('Visualizar'),
                     EditAction::make()
+                        ->label('Editar')
                         ->visible(function ($record) {
                             if ($record->trashed()) return false;
                             $user = auth()->user();
                             return $user->hasRole('super_admin') || $record->user_id === $user->id;
                         }),
                     DeleteAction::make()
+                        ->label('Excluir')
                         ->visible(function ($record) {
                             if ($record->trashed()) return false;
                             $user = auth()->user();

@@ -176,10 +176,14 @@ class RoleResource extends Resource
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
-                    EditAction::make(),
-                    static::duplicateAction(),
-                    DeleteAction::make(),
+                    ViewAction::make()
+                        ->label('Visualizar'),
+                    EditAction::make()
+                        ->label('Editar'),
+                    static::duplicateAction()
+                        ->label('Duplicar'),
+                    DeleteAction::make()
+                        ->label('Excluir'),
                 ]),
             ])
             ->toolbarActions([
