@@ -1,7 +1,5 @@
 <?php
 
-use Tapp\FilamentAuditing\Filament\Resources\Audits\AuditResource;
-
 return [
 
     'audits_sort' => [
@@ -40,7 +38,7 @@ return [
     ],
 
     'resources' => [
-        'AuditResource' => AuditResource::class,
+        'AuditResource' => \App\Filament\Resources\Audits\AuditResource::class,
     ],
 
 ];

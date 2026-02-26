@@ -8,18 +8,14 @@
                 @foreach($getState() ?? [] as $key => $value)
                     <li class="mb-2">
                         <span class="inline-block rounded-md whitespace-normal text-gray-700 dark:text-gray-200">
-                           {{ Str::title($key) }}:
+                           {{ is_int($key) ? '#'.($key + 1) : Str::title($key) }}:
                         </span>
                         <span class="font-semibold">
-                            @unless(is_array($value))
-                                {{ $value }}
+                            @if(is_array($value))
+                                <pre class="text-xs font-mono whitespace-pre-wrap break-all text-gray-700 dark:text-gray-200 leading-relaxed">{{ json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) }}</pre>
                             @else
-                                <span class="divide-x divide-solid divide-gray-200 dark:divide-gray-700">
-                                    @foreach ($value as $nestedValue)
-                                        {{ $nestedValue['id'] }}
-                                    @endforeach
-                                </span>
-                            @endunless
+                                {{ $value }}
+                            @endif
                         </span>
                     </li>
                 @endforeach

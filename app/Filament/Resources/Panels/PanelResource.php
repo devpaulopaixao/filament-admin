@@ -22,7 +22,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\RelationManagers\AuditsRelationManager;
 
 class PanelResource extends Resource
 {

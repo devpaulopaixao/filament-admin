@@ -25,7 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
 {
