@@ -218,6 +218,9 @@ return [
             \App\Filament\Widgets\StatsOverviewWidget::class,
             \App\Filament\Widgets\LatestPanelsWidget::class,
             \App\Filament\Widgets\LatestScreensWidget::class,
+            \App\Filament\Widgets\PanelsInfoWidget::class,
+            \App\Filament\Widgets\ScreensInfoWidget::class,
+            \App\Filament\Widgets\PanelGroupsInfoWidget::class,
         ],
     ],
 
