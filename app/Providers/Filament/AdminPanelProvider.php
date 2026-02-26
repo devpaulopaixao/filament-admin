@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
+use Filament\View\PanelsRenderHook;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -28,6 +30,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->passwordReset()
+            //->brandName('Gestão de painéis')
+            //->brandLogo(asset('images/logo.svg'))
             ->colors([
                 'primary' => Color::Teal,
             ])
@@ -53,6 +57,10 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Controle de Acesso')
                     ->navigationLabel('Perfis'),
+                FilamentLanguageSwitcherPlugin::make()
+                    ->showOnAuthPages()
+                    ->locales(['pt_BR', 'en'])
+                    ->rememberLocale(),
             ])
             ->authMiddleware([
                 Authenticate::class,
