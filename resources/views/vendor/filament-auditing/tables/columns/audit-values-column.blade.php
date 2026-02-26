@@ -3,26 +3,7 @@
 @endphp
 
 <div {{ $getExtraAttributeBag() }} class="fi-ta-col">
-    <div class="fi-size-sm fi-ta-text-item fi-ta-text">
-        <ul>
-            @foreach($values ?? [] as $key => $value)
-                <li>
-                    <span class="inline-block rounded-md whitespace-normal text-gray-700 dark:text-gray-200">
-                       {{ Str::title($key) }}:
-                    </span>
-                    <span class="font-semibold">
-                        @unless(is_array($value))
-                            {{ $value }}
-                        @else
-                            <span class="divide-x divide-solid divide-gray-200 dark:divide-gray-700">
-                                @foreach ($value as $nestedValue)
-                                    {{ $nestedValue['id'] }}
-                                @endforeach
-                            </span>
-                        @endunless
-                    </span>
-                </li>
-            @endforeach
-        </ul>
-    </div>
+    @if($values)
+        <pre class="text-xs font-mono whitespace-pre-wrap break-all text-gray-700 dark:text-gray-200 leading-relaxed">{{ is_array($values) ? json_encode($values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : $values }}</pre>
+    @endif
 </div>
