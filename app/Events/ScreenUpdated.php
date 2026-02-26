@@ -32,6 +32,11 @@ class ScreenUpdated implements ShouldBroadcast
         ];
     }
 
+    public function broadcastIf(): bool
+    {
+        return config('broadcasting.default') === 'reverb';
+    }
+
     public function broadcastAs(): string
     {
         return 'ScreenUpdated';
