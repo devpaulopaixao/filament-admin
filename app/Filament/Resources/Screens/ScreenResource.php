@@ -18,6 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ScreenResource extends Resource
 {
@@ -82,6 +83,7 @@ class ScreenResource extends Resource
     {
         return [
             AllowedUsersRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

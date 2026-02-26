@@ -22,6 +22,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class PanelResource extends Resource
 {
@@ -148,6 +149,7 @@ class PanelResource extends Resource
         return [
             PanelLinksRelationManager::class,
             AllowedUsersRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 
