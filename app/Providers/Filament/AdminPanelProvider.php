@@ -30,8 +30,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->passwordReset()
-            //->brandName('Gestão de painéis')
-            //->brandLogo(asset('images/logo.svg'))
+            ->brandName('Gestão de painéis')
+            ->brandLogo(new \Illuminate\Support\HtmlString(view('filament.brand')->render()))
             ->colors([
                 'primary' => Color::Teal,
             ])
