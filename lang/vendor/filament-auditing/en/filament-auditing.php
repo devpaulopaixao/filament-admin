@@ -10,6 +10,7 @@ return [
 
     'table.heading' => 'Audits',
     'table.empty_state_heading' => 'No audits',
+    'navigation.singular' => 'Audit',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ return [
     'column.created_at' => 'Created',
     'column.old_values' => 'Old Values',
     'column.new_values' => 'New Values',
-    'column.auditable_type' => 'Audited',
+    'column.auditable_type' => 'Model',
 
     /*
     |--------------------------------------------------------------------------
@@ -33,6 +34,8 @@ return [
     'filter.created_at' => 'Created',
     'filter.created_from' => 'From',
     'filter.created_until' => 'Until',
+    'filter.auditable_type' => 'Model',
+    'filter.user' => 'User',
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +56,7 @@ return [
     'infolist.tab.new-values' => 'New Values',
     'infolist.user' => 'User',
     'infolist.created-at' => 'Created',
-    'infolist.audited' => 'Audited',
+    'infolist.audited' => 'Model',
     'infolist.event' => 'Event',
     'infolist.url' => 'URL',
     'infolist.ip-address' => 'IP Address',

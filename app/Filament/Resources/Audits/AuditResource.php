@@ -17,6 +17,21 @@ use Tapp\FilamentAuditing\Filament\Resources\Audits\AuditResource as BaseAuditRe
 
 class AuditResource extends BaseAuditResource
 {
+    public static function getNavigationLabel(): string
+    {
+        return (string) trans('filament-auditing::filament-auditing.table.heading');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return (string) trans('filament-auditing::filament-auditing.navigation.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return (string) trans('filament-auditing::filament-auditing.table.heading');
+    }
+
     public static function table(Table $table): Table
     {
         $table = parent::table($table);
@@ -28,11 +43,10 @@ class AuditResource extends BaseAuditResource
 
         $table->pushFilters([
             SelectFilter::make('auditable_type')
-                ->label('Model')
-                ->searchable()
+                ->label(trans('filament-auditing::filament-auditing.filter.auditable_type'))
                 ->options(AuditableModels::getList()),
             SelectFilter::make('user_id')
-                ->label('Usuário')
+                ->label(trans('filament-auditing::filament-auditing.filter.user'))
                 ->searchable()
                 ->options(User::orderBy('name')->pluck('name', 'id')),
         ]);
