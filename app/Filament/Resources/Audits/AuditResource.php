@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Audits;
 
 use App\Filament\Resources\Audits\Pages\ListAudits;
 use App\Helpers\AuditableModels;
+use App\Models\User;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -20,10 +21,20 @@ class AuditResource extends BaseAuditResource
     {
         $table = parent::table($table);
 
+        $table->columns(array_values(array_filter(
+            $table->getColumns(),
+            function ($col) { return ! in_array($col->getName(), ['old_values', 'new_values']); }
+        )));
+
         $table->pushFilters([
             SelectFilter::make('auditable_type')
                 ->label('Model')
+                ->searchable()
                 ->options(AuditableModels::getList()),
+            SelectFilter::make('user_id')
+                ->label('Usuário')
+                ->searchable()
+                ->options(User::orderBy('name')->pluck('name', 'id')),
         ]);
 
         return $table;
