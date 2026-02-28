@@ -66,4 +66,14 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsToMany(Screen::class, 'screen_user');
     }
+
+    public function canImpersonate(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    public function canBeImpersonated(): bool
+    {
+        return ! $this->hasRole('super_admin');
+    }
 }
