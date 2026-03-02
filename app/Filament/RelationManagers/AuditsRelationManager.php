@@ -8,10 +8,16 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\Str;
 use Tapp\FilamentAuditing\Filament\Infolists\Components\AuditValuesEntry;
+use Illuminate\Database\Eloquent\Model;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager as BaseAuditsRelationManager;
 
 class AuditsRelationManager extends BaseAuditsRelationManager
 {
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return auth()->user()->can('ViewAny:Audit');
+    }
+
     public function infolist(Schema $schema): Schema
     {
         return $schema->components([

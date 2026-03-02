@@ -17,6 +17,11 @@ use Tapp\FilamentAuditing\Filament\Resources\Audits\AuditResource as BaseAuditRe
 
 class AuditResource extends BaseAuditResource
 {
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('ViewAny:Audit');
+    }
+
     public static function getNavigationLabel(): string
     {
         return (string) trans('filament-auditing::filament-auditing.table.heading');
