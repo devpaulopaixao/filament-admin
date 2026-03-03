@@ -43,10 +43,22 @@ class PanelForm
                         ->label('Painel ativo')
                         ->helperText('Quando desativado, a exibição pública mostrará uma tela de painel inativo.')
                         ->default(true),
+                    Toggle::make('show_title')
+                        ->label('Exibir título do link')
+                        ->helperText('Mostra o título do link atual na barra de estado da exibição pública. Obrigatório quando os controles de navegação estão ativos.')
+                        ->default(true)
+                        ->disabled(fn ($get) => $get('show_controls'))
+                        ->dehydrated(true),
                     Toggle::make('show_controls')
                         ->label('Exibir controles de navegação')
                         ->helperText('Mostra botões de pausar, avançar e retroceder na exibição pública.')
-                        ->default(false),
+                        ->default(false)
+                        ->live()
+                        ->afterStateUpdated(function ($state, $set) {
+                            if ($state) {
+                                $set('show_title', true);
+                            }
+                        }),
                 ])
                 ->columns(2),
 

@@ -23,6 +23,7 @@ class Panel extends Model implements Auditable
         'title',
         'status',
         'show_controls',
+        'show_title',
         'hash',
     ];
 
@@ -31,6 +32,7 @@ class Panel extends Model implements Auditable
         return [
             'status' => 'boolean',
             'show_controls' => 'boolean',
+            'show_title' => 'boolean',
         ];
     }
 

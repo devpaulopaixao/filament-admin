@@ -29,6 +29,7 @@ class PanelUpdated implements ShouldBroadcast
             'hash'          => $this->panel->hash,
             'title'         => $this->panel->title,
             'status'        => $this->panel->status,
+            'show_title'    => $this->panel->show_title,
             'show_controls' => $this->panel->show_controls,
             'links'         => $this->panel->links()
                 ->where('status', true)

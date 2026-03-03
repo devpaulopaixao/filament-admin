@@ -31,7 +31,6 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->profile()
-
             ->brandName('Gestão de painéis')
             ->brandLogo(new \Illuminate\Support\HtmlString(view('filament.brand')->render()))
             ->databaseTransactions()

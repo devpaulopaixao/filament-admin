@@ -32,6 +32,9 @@ class PanelInfolist
                     IconEntry::make('status')
                         ->label('Painel ativo')
                         ->boolean(),
+                    IconEntry::make('show_title')
+                        ->label('Exibir título do link')
+                        ->boolean(),
                     IconEntry::make('show_controls')
                         ->label('Controles de navegação')
                         ->boolean(),

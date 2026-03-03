@@ -143,26 +143,32 @@ function Controls({ isPaused, onPrev, onTogglePause, onNext }) {
 // Status bar — título, índice, barra de progresso e controles opcionais
 // ---------------------------------------------------------------------------
 
-function StatusBar({ link, currentIndex, total, elapsed, durationMs, showControls, isPaused, onPrev, onTogglePause, onNext }) {
+function StatusBar({ link, currentIndex, total, elapsed, durationMs, showControls, showTitle, isPaused, onPrev, onTogglePause, onNext }) {
     var singleLink = total === 1;
     var pct = (!singleLink && durationMs > 0) ? Math.min((elapsed / durationMs) * 100, 100) : 0;
+    var hasControls = showControls && !singleLink;
+
+    // Nothing to show: no title, no controls, single link
+    if (!showTitle && !hasControls && singleLink) return null;
 
     return (
         <div style={styles.statusBar}>
-            <div style={styles.statusInfo}>
-                {showControls && !singleLink && (
-                    <Controls
-                        isPaused={isPaused}
-                        onPrev={onPrev}
-                        onTogglePause={onTogglePause}
-                        onNext={onNext}
-                    />
-                )}
-                <span style={Object.assign({}, styles.statusTitle, singleLink ? { gridColumn: '1 / -1' } : {})}>{link.title || link.url}</span>
-                {!singleLink && (
-                    <span style={styles.statusIndex}>{currentIndex + 1}&nbsp;/&nbsp;{total}</span>
-                )}
-            </div>
+            {showTitle && (
+                <div style={styles.statusInfo}>
+                    {hasControls && (
+                        <Controls
+                            isPaused={isPaused}
+                            onPrev={onPrev}
+                            onTogglePause={onTogglePause}
+                            onNext={onNext}
+                        />
+                    )}
+                    <span style={Object.assign({}, styles.statusTitle, singleLink ? { gridColumn: '1 / -1' } : {})}>{link.title || link.url}</span>
+                    {!singleLink && (
+                        <span style={styles.statusIndex}>{currentIndex + 1}&nbsp;/&nbsp;{total}</span>
+                    )}
+                </div>
+            )}
             {!singleLink && (
                 <div style={styles.progressTrack}>
                     <div style={Object.assign({}, styles.progressFill, { width: pct + '%' })} />
@@ -328,6 +334,7 @@ function PanelDisplay({ hash, pageToken, pageKey }) {
                 total={panel.links.length}
                 elapsed={elapsed}
                 durationMs={ms}
+                showTitle={panel.show_title !== false}
                 showControls={panel.show_controls}
                 isPaused={isPaused}
                 onPrev={handlePrev}
@@ -394,6 +401,13 @@ var styles = {
     statusInfo: {
         display: 'grid',
         gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        padding: '6px 14px',
+        gap: '8px',
+    },
+    statusInfoNoTitle: {
+        display: 'flex',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         padding: '6px 14px',
         gap: '8px',
