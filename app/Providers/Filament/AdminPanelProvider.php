@@ -30,8 +30,11 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->passwordReset()
+            ->profile()
+
             ->brandName('Gestão de painéis')
             ->brandLogo(new \Illuminate\Support\HtmlString(view('filament.brand')->render()))
+            ->databaseTransactions()
             ->colors([
                 'primary' => Color::Teal,
             ])
@@ -62,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
                     ->locales(['pt_BR', 'en'])
                     ->rememberLocale(),
             ])
+            ->spa()
             ->authMiddleware([
                 Authenticate::class,
             ]);
