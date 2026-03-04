@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('restoreAudit', function ($_user, $_resource = null) {
             return true;
+        });
+
+        Gate::define('viewPulse', function (User $user) {
+            return $user->hasRole('super_admin');
         });
     }
 }

@@ -10,6 +10,7 @@
         "craft-forge/filament-language-switcher": "^1.2",
         "filament/filament": "4.0",
         "laravel/framework": "^11.0",
+        "laravel/pulse": "^1.6",
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",
         "owen-it/laravel-auditing": "^14.0",
