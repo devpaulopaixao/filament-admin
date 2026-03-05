@@ -1,0 +1,29 @@
+.git
+.gitignore
+.github
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Storage (montado via volume em dev; em prod regenerado)
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Dev / IDE
+.vscode
+.idea
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Docker próprio
+docker-compose*.yml
+docker/
+
+# Docs / testes (opcionais em prod)
+README.md
+phpunit.xml
+tests/

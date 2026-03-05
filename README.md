@@ -21,6 +21,11 @@
   - [Pré-requisitos](#pré-requisitos)
   - [Configuração](#configuração)
   - [Ambiente de Desenvolvimento](#ambiente-de-desenvolvimento)
+- [Docker](#docker)
+  - [Estrutura](#estrutura)
+  - [Desenvolvimento com Docker](#desenvolvimento-com-docker)
+  - [Produção com Docker](#produção-com-docker)
+  - [Serviços e Portas](#serviços-e-portas)
 - [Variáveis de Ambiente](#variáveis-de-ambiente)
 - [Licença](#licença)
 
@@ -176,6 +181,88 @@ php artisan serve            # servidor HTTP
 php artisan reverb:start     # servidor WebSocket
 npm run dev                  # Vite com hot-reload
 ```
+
+---
+
+## Docker
+
+O projeto inclui um ambiente Docker completo com suporte a desenvolvimento e produção.
+
+### Estrutura
+
+```
+docker/
+├── nginx/
+│   └── default.conf        # Vhost + proxy WebSocket para Reverb
+└── php/
+    ├── Dockerfile           # Multi-stage: base / development / production
+    └── php.ini              # Limites de upload, timezone, Xdebug
+docker-compose.yml           # Ambiente de desenvolvimento
+docker-compose.prod.yml      # Override para produção
+.dockerignore
+```
+
+### Desenvolvimento com Docker
+
+**Pré-requisitos:** Docker e Docker Compose instalados.
+
+Ajuste o `.env` para apontar ao serviço MySQL do container:
+
+```env
+DB_HOST=mysql
+DB_PORT=3306
+```
+
+Suba os containers:
+
+```bash
+docker-compose up -d --build
+```
+
+Na primeira execução, instale as dependências e execute as migrações:
+
+```bash
+docker-compose exec app composer install
+docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan migrate --seed
+docker-compose exec app php artisan shield:generate --all
+```
+
+Acesse a aplicação em `http://localhost`. O Vite dev server estará disponível em `http://localhost:5173`.
+
+### Produção com Docker
+
+Compile os assets antes do build:
+
+```bash
+npm run build
+```
+
+Suba com o override de produção:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Execute as migrações e otimize a aplicação:
+
+```bash
+docker-compose exec app php artisan migrate --force
+docker-compose exec app php artisan config:cache
+docker-compose exec app php artisan route:cache
+docker-compose exec app php artisan view:cache
+```
+
+### Serviços e Portas
+
+| Serviço | Porta | Descrição |
+|---------|-------|-----------|
+| nginx | `80` | Web server |
+| mysql | `3306` | MySQL 8.0 |
+| reverb | `8080` | WebSocket (proxied em `/app` pelo nginx) |
+| node | `5173` | Vite HMR (somente desenvolvimento) |
+
+O Xdebug está configurado na porta `9003` via `host.docker.internal`.
 
 ---
 

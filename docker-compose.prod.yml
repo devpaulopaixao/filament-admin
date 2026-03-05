@@ -1,0 +1,48 @@
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+services:
+
+  app:
+    build:
+      target: production
+    restart: always
+    volumes: []
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
+
+  nginx:
+    restart: always
+    volumes:
+      - app_public:/var/www/public
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  mysql:
+    restart: always
+
+  reverb:
+    build:
+      target: production
+    restart: always
+    volumes: []
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+
+  queue:
+    build:
+      target: production
+    restart: always
+    volumes: []
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+
+  # Node não é necessário em produção — assets já compilados na imagem
+  node:
+    profiles:
+      - donotstart
+
+volumes:
+  app_public:
