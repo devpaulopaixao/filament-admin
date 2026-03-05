@@ -31,6 +31,7 @@ class PanelUpdated implements ShouldBroadcast
             'status'        => $this->panel->status,
             'show_title'    => $this->panel->show_title,
             'show_controls' => $this->panel->show_controls,
+            'blocked'       => $this->panel->blocked,
             'links'         => $this->panel->links()
                 ->where('status', true)
                 ->get(['id', 'title', 'url', 'duration_time', 'display_number'])

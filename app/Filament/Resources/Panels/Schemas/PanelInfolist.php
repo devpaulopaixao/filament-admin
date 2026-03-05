@@ -38,6 +38,13 @@ class PanelInfolist
                     IconEntry::make('show_controls')
                         ->label('Controles de navegação')
                         ->boolean(),
+                    IconEntry::make('blocked')
+                        ->label('Protegido com senha')
+                        ->boolean()
+                        ->trueIcon('heroicon-o-lock-closed')
+                        ->falseIcon('heroicon-o-lock-open')
+                        ->trueColor('warning')
+                        ->falseColor('gray'),
                 ])
                 ->columns(2),
 

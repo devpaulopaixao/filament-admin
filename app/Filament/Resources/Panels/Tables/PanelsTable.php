@@ -41,6 +41,13 @@ class PanelsTable
                 IconColumn::make('show_controls')
                     ->label('Controles')
                     ->boolean(),
+                IconColumn::make('blocked')
+                    ->label('Senha')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-lock-closed')
+                    ->falseIcon('heroicon-o-lock-open')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
                 TextColumn::make('links_count')
                     ->label('Links')
                     ->counts('links')

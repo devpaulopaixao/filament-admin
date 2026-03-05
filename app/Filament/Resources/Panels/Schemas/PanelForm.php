@@ -10,6 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Hash;
 
 class PanelForm
 {
@@ -59,6 +60,20 @@ class PanelForm
                                 $set('show_title', true);
                             }
                         }),
+                    Toggle::make('blocked')
+                        ->label('Proteger com senha')
+                        ->helperText('Quando ativado, a exibição pública exigirá uma senha para acesso.')
+                        ->default(false)
+                        ->live(),
+                    TextInput::make('password')
+                        ->label('Senha de acesso')
+                        ->password()
+                        ->revealable()
+                        ->helperText('Deixe em branco para manter a senha atual.')
+                        ->visible(fn ($get) => (bool) $get('blocked'))
+                        ->required(fn ($operation, $get) => $operation === 'create' && (bool) $get('blocked'))
+                        ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                        ->dehydrated(fn ($state) => filled($state)),
                 ])
                 ->columns(2),
 

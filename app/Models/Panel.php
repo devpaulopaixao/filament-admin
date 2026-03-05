@@ -24,7 +24,13 @@ class Panel extends Model implements Auditable
         'status',
         'show_controls',
         'show_title',
+        'blocked',
+        'password',
         'hash',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     protected function casts(): array
@@ -33,6 +39,7 @@ class Panel extends Model implements Auditable
             'status' => 'boolean',
             'show_controls' => 'boolean',
             'show_title' => 'boolean',
+            'blocked' => 'boolean',
         ];
     }
 

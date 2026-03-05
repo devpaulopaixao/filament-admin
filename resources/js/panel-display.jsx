@@ -233,6 +233,10 @@ function PanelDisplay({ hash, pageToken, pageKey }) {
         var channel = echo.channel('panel.' + hash);
 
         channel.listen('.PanelUpdated', function (event) {
+            if (event.blocked) {
+                window.location.href = '/painel/' + hash;
+                return;
+            }
             setPanel(event);
             setCurrentIndex(0);
             setElapsed(0);
