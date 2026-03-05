@@ -61,6 +61,13 @@ class LatestPanelsWidget extends BaseWidget
                 IconColumn::make('status')
                     ->label('Ativo')
                     ->boolean(),
+                IconColumn::make('blocked')
+                    ->label('Senha')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-lock-closed')
+                    ->falseIcon('heroicon-o-lock-open')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
                 TextColumn::make('links_count')
                     ->label('Links')
                     ->counts('links')
