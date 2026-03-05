@@ -8,6 +8,8 @@ use App\Filament\Resources\Screens\Widgets\ScreenAccessStatsWidget;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
 class ViewScreen extends ViewRecord
@@ -29,18 +31,13 @@ class ViewScreen extends ViewRecord
         ];
     }
 
-    public function getWidgetData(): array
+    public function content(Schema $schema): Schema
     {
-        return [
-            'record' => $this->getRecord(),
-        ];
-    }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
-            ScreenAccessStatsWidget::class,
-            ScreenAccessChartWidget::class,
-        ];
+        return $schema->components([
+            $this->getInfolistContentComponent(),
+            Livewire::make(ScreenAccessStatsWidget::class, ['record' => $this->getRecord()])->key('stats'),
+            Livewire::make(ScreenAccessChartWidget::class, ['record' => $this->getRecord()])->key('chart'),
+            $this->getRelationManagersContentComponent(),
+        ]);
     }
 }
