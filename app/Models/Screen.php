@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class Screen extends Model implements Auditable
@@ -55,5 +56,10 @@ class Screen extends Model implements Auditable
     public function accessLogs(): HasMany
     {
         return $this->hasMany(ScreenAccessLog::class);
+    }
+
+    public function lastAccessLog(): HasOne
+    {
+        return $this->hasOne(ScreenAccessLog::class)->latestOfMany();
     }
 }

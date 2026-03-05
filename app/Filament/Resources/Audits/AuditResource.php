@@ -13,10 +13,14 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Tapp\FilamentAuditing\Filament\Infolists\Components\AuditValuesEntry;
+use BackedEnum;
+use Filament\Support\Icons\Heroicon;
 use Tapp\FilamentAuditing\Filament\Resources\Audits\AuditResource as BaseAuditResource;
 
 class AuditResource extends BaseAuditResource
 {
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+
     public static function canViewAny(): bool
     {
         return auth()->user()->can('ViewAny:Audit');

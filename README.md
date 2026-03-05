@@ -44,6 +44,7 @@ Desenvolvemos o Sistema de Gestão de Painéis Digitais para centralizar o contr
 - Controlar o acesso de usuários por painel ou grupo de painéis;
 - Definir perfis de acesso com permissões granulares por funcionalidade;
 - Ativar ou desativar painéis, links e telas conforme necessário;
+- Proteger painéis com senha — bloqueio e desbloqueio refletidos em tempo real nas telas via WebSocket;
 - Acompanhar todas as ações realizadas no sistema por meio de trilha de auditoria completa, registrando usuário, data, IP e valores anteriores e posteriores a cada alteração;
 - Monitorar a performance da aplicação (memória, banco de dados, requests HTTP, filas) com Laravel Pulse.
 
@@ -55,6 +56,8 @@ Desenvolvemos o Sistema de Gestão de Painéis Digitais para centralizar o contr
 
 - Criação de painéis com título, status ativo/inativo e hash UUID único
 - Opção de exibir ou ocultar controles e título na visualização pública
+- **Proteção com senha**: coluna `blocked` habilita exigência de senha na exibição pública; bloqueio e desbloqueio propagados em tempo real via WebSocket — a tela exibe imediatamente a solicitação de senha ou libera o acesso sem necessidade de recarga
+- Invalidação automática de sessão ao trocar a senha do painel
 - Agrupamento em **grupos de painéis** (PanelGroups) para melhor organização
 - Adição de **links** com URL, duração de exibição e ordenação por número de exibição
 - Controle de usuários com acesso individual a cada painel e grupo (relação many-to-many)
@@ -75,6 +78,7 @@ Desenvolvemos o Sistema de Gestão de Painéis Digitais para centralizar o contr
 - Controle de usuários com acesso por tela
 - Detecção automática de tipo de dispositivo (mobile, tablet, desktop)
 - Registro detalhado de logs de acesso (`ScreenAccessLog`) com data, hora, IP e dispositivo
+- **Data e hora do último acesso** exibida diretamente na listagem de telas, com tempo relativo (ex: "há 3 horas") e indicação "Nunca" para telas sem acessos registrados
 - Widget de estatísticas de acesso: total, últimas 24h, últimos 7 dias e dispositivo mais utilizado
 - Gráfico de tendência de acessos com filtros de 7, 30 e 90 dias
 - Broadcast automático a cada atualização via evento `ScreenUpdated`
@@ -93,7 +97,7 @@ Desenvolvemos o Sistema de Gestão de Painéis Digitais para centralizar o contr
 ### Dashboard
 
 - Widgets de estatísticas gerais com visão consolidada e filtragem por papel (`StatsOverviewWidget`)
-- Listagem dos painéis criados mais recentemente (`LatestPanelsWidget`)
+- Listagem dos painéis criados mais recentemente (`LatestPanelsWidget`) — exibe status de proteção com senha
 - Listagem das telas criadas mais recentemente (`LatestScreensWidget`)
 - Alternância de idioma (Português / Inglês)
 
@@ -111,6 +115,8 @@ Desenvolvemos o Sistema de Gestão de Painéis Digitais para centralizar o contr
 - Rota pública `/tela/{id}` para exibição de telas vinculadas
 - Acesso autenticado via token criptografado com expiração de 24 horas (AES-256-GCM)
 - API interna para carregamento de dados encriptados pelo frontend
+- **Proteção por senha**: painéis marcados como bloqueados exigem autenticação antes da exibição; sessão validada por impressão digital do hash da senha — troca de senha invalida automaticamente sessões ativas
+- Bloqueio e desbloqueio em tempo real: a tela reage imediatamente ao evento WebSocket `PanelUpdated` sem necessidade de recarga manual
 
 ### Monitoramento
 

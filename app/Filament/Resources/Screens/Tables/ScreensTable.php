@@ -45,6 +45,12 @@ class ScreensTable
                     ->label('Criado por')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('lastAccessLog.created_at')
+                    ->label('Último acesso')
+                    ->dateTime('d/m/Y H:i')
+                    ->placeholder('Nunca')
+                    ->sortable()
+                    ->since(),
                 TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
