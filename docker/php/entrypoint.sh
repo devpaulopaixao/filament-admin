@@ -51,31 +51,43 @@ set_env "SESSION_DRIVER"        "${SESSION_DRIVER:-file}"
 set_env "REDIS_HOST" "${REDIS_HOST:-redis}"
 set_env "REDIS_PORT" "${REDIS_PORT:-6379}"
 
-# ── 7. Super Admin ─────────────────────────────────────────────────────────────
+# ── 7. Reverb ──────────────────────────────────────────────────────────────────
+# REVERB_HOST: nome do serviço Docker (usado pelo PHP server-side para broadcast)
+# VITE_REVERB_HOST: endereço que o browser usa (sempre o host público)
+set_env "REVERB_HOST"   "${REVERB_HOST:-reverb}"
+set_env "REVERB_PORT"   "${REVERB_PORT:-8080}"
+set_env "REVERB_SCHEME" "${REVERB_SCHEME:-http}"
+# Vite usa o host público (localhost em dev), não o nome do serviço Docker
+VITE_HOST=$(echo "${APP_URL:-http://localhost}" | sed 's|https\?://||' | sed 's|/.*||' | sed 's|:.*||')
+set_env "VITE_REVERB_HOST"   "${VITE_REVERB_HOST:-${VITE_HOST}}"
+set_env "VITE_REVERB_PORT"   "${REVERB_PORT:-8080}"
+set_env "VITE_REVERB_SCHEME" "${REVERB_SCHEME:-http}"
+
+# ── 8. Super Admin ─────────────────────────────────────────────────────────────
 set_env "SUPER_ADMIN_NAME"     "${SUPER_ADMIN_NAME:-Super Admin}"
 set_env "SUPER_ADMIN_EMAIL"    "${SUPER_ADMIN_EMAIL:-admin@admin.com}"
 set_env "SUPER_ADMIN_PASSWORD" "${SUPER_ADMIN_PASSWORD:-password}"
 
-# ── 8. Gera APP_KEY se vazio ───────────────────────────────────────────────────
+# ── 9. Gera APP_KEY se vazio ───────────────────────────────────────────────────
 APP_KEY_VALUE=$(grep "^APP_KEY=" "$ENV_FILE" | cut -d= -f2)
 if [ -z "$APP_KEY_VALUE" ]; then
     echo "[entrypoint] Gerando APP_KEY..."
     php /var/www/artisan key:generate --force
 fi
 
-# ── 9. Permissões de storage ───────────────────────────────────────────────────
+# ── 10. Permissões de storage ──────────────────────────────────────────────────
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 
-# ── 10. Migrations ─────────────────────────────────────────────────────────────
+# ── 11. Migrations ─────────────────────────────────────────────────────────────
 echo "[entrypoint] Rodando migrations..."
 php /var/www/artisan migrate --force --no-interaction
 
-# ── 11. Seeders ────────────────────────────────────────────────────────────────
+# ── 12. Seeders ────────────────────────────────────────────────────────────────
 echo "[entrypoint] Rodando seeders..."
 php /var/www/artisan db:seed --force --no-interaction
 
-# ── 12. Cache em produção ──────────────────────────────────────────────────────
+# ── 13. Cache em produção ──────────────────────────────────────────────────────
 if [ "${APP_ENV}" = "production" ]; then
     php /var/www/artisan config:cache
     php /var/www/artisan route:cache
