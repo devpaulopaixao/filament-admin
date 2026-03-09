@@ -22,6 +22,8 @@ Thumbs.db
 # Docker próprio
 docker-compose*.yml
 docker/
+!docker/php/entrypoint.sh
+!docker/php/fpm-pool.conf
 
 # Docs / testes (opcionais em prod)
 README.md

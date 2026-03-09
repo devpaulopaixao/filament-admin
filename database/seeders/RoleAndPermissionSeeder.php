@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -38,6 +39,9 @@ class RoleAndPermissionSeeder extends Seeder
         foreach ($allPermissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
+
+        // ── Limpa pivot antes de sincronizar (idempotente) ───────────────────
+        DB::table('role_has_permissions')->truncate();
 
         // ── super_admin: acesso total ─────────────────────────────────────────
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);

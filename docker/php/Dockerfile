@@ -2,7 +2,7 @@
 FROM php:8.2-fpm-alpine AS base
 
 RUN apk add --no-cache \
-        bash curl git unzip zip \
+        bash curl git nano unzip zip \
         freetype-dev libjpeg-turbo-dev libpng-dev libwebp-dev \
         libzip-dev oniguruma-dev icu-dev supervisor
 
@@ -31,6 +31,11 @@ RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS linux-headers \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+COPY docker/php/fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["php-fpm"]
 
 # ── Production ────────────────────────────────────────────────────────────────
